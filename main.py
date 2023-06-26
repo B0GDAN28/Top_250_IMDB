@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 import requests
-
+import pandas as pd
 url = "https://www.imdb.com/chart/top/"
 result = requests.get(url)
 doc = BeautifulSoup(result.text, "html.parser")
@@ -66,6 +66,27 @@ def get_rating_stars(doc):
 
 list_rating_stars = get_rating_stars(doc)
 print(list_rating_stars)
+def create_rank():
+    rank=[]
+    for i in range(250):
+        rank.append(i+1)
+    return rank
+
+ranks=create_rank()
+print(ranks)
 
 url_movie=list_movies_links[1]
 print(url_movie)
+
+def scrape_imdb_250(doc):
+    url = "https://www.imdb.com/chart/top/"
+    result = requests.get(url)
+    doc = BeautifulSoup(result.text, "html.parser")
+    top_movies_dict={
+        "rank":create_rank(),
+        "Title":get_movie_names(doc),
+        "Movie Launched":get_movie_production_year(doc),
+        "Rating":get_rating_stars(doc)}
+    return top_movies_dict
+Top_250_IMDB = pd.DataFrame(scrape_imdb_250(doc))
+Top_250_IMDB.to_csv("Top_Movies_250_IMDB", index=None)
