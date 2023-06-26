@@ -66,3 +66,6 @@ def get_rating_stars(doc):
 
 list_rating_stars = get_rating_stars(doc)
 print(list_rating_stars)
+
+url_movie=list_movies_links[0]
+print(url_movie)
