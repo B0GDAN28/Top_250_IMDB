@@ -95,7 +95,7 @@ def scrape_imdb_250(doc):
 Top_250_IMDB = pd.DataFrame(scrape_imdb_250(doc))
 Top_250_IMDB.to_csv("Top_Movies_250_IMDB", index=None)
 
-movie_urls = get_movie_links(doc)[11]
+movie_urls = get_movie_links(doc)[0]
 print(movie_urls)
 
 
@@ -170,8 +170,6 @@ print(list_directors)
 def get_writers(movie_url):
     writers=movie_url.find("li", class_="ipc-metadata-list__item ipc-metadata-list-item--link")
     children=writers.findChildren("div", class_="ipc-metadata-list-item__content-container")
-    for child in children:
-        print(child.text)
     writers1=[writer.text for writer in children]
     return writers1
 list_writers=get_writers(movie_url)
