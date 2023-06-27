@@ -167,10 +167,13 @@ def get_directors(movie_url):
 list_directors = get_directors(movie_url)
 print(list_directors)
 
+
 def get_writers(movie_url):
-    writers=movie_url.find("li", class_="ipc-metadata-list__item ipc-metadata-list-item--link")
-    children=writers.findChildren("div", class_="ipc-metadata-list-item__content-container")
-    writers1=[writer.text for writer in children]
+    writers = movie_url.find("li", class_="ipc-metadata-list__item ipc-metadata-list-item--link")
+    children = writers.findChildren("div", class_="ipc-metadata-list-item__content-container")
+    writers1 = [writer.text for writer in children]
     return writers1
-list_writers=get_writers(movie_url)
+
+
+list_writers = get_writers(movie_url)
 print(list_writers)
