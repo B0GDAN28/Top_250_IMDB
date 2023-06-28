@@ -3,13 +3,32 @@ import requests
 import pandas as pd
 
 url = "https://www.imdb.com/chart/top/"
-result = requests.get(url)
-doc = BeautifulSoup(result.text, "html.parser")
+
+
+def get_top_250(url):
+    result = requests.get(url)
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
+                      "Chrome/114.0.0.0 Safari/537.36",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,"
+                  "application/signed-exchange;v=b3;q=0.7",
+        "DNT": "1",
+        "Connection": "close",
+        "Upgrade-Insecure-Requests": "1"
+    }
+    movie_doc2 = requests.get(url, headers=headers)
+    movie_doc = BeautifulSoup(movie_doc2.text, 'html.parser')
+    return movie_doc
+
+
+doc = get_top_250(url)
 
 
 def get_movie_links(doc):
     urls = []
     links = doc.find_all("td", class_="titleColumn")
+
     for i in links:
         f = i.find_all("a")
         for a in f:
@@ -22,6 +41,7 @@ def get_movie_links(doc):
 
 list_movies_links = get_movie_links(doc)
 
+print(len(list_movies_links))
 print(list_movies_links)
 
 
@@ -57,6 +77,7 @@ print(list_year_production)
 def get_rating_stars(doc):
     rating_stars = []
     stars = doc.find_all("td", class_="ratingColumn imdbRating")
+
     for z in stars:
         h = z.find_all("strong")
         for k in h:
@@ -92,10 +113,12 @@ def scrape_imdb_250(doc):
     return top_movies_dict
 
 
-Top_250_IMDB = pd.DataFrame(scrape_imdb_250(doc))
-Top_250_IMDB.to_csv("Top_Movies_250_IMDB", index=None)
+# Top_250_IMDB = pd.DataFrame(scrape_imdb_250(doc))
+# Top_250_IMDB.to_csv("Top_Movies_250_IMDB", index=None)
 
-movie_urls = get_movie_links(doc)[0]
+movie_urls = get_movie_links(doc)[11]
+
+
 print(movie_urls)
 
 
@@ -117,7 +140,6 @@ def get_movie_url(movie_urls):
 movie_url = get_movie_url(movie_urls)
 
 
-# print(movie_url)
 
 
 def get_movie_type(movie_url):
@@ -176,4 +198,13 @@ def get_writers(movie_url):
 
 
 list_writers = get_writers(movie_url)
+for i in range(len(list_writers)):
+    spaced_name = ''
+    for j in range(len(list_writers[i])):
+        if j > 0 and list_writers[i][j].isupper():
+            spaced_name += ' ' + list_writers[i][j]
+        else:
+            spaced_name += list_writers[i][j]
+    list_writers[i] = spaced_name
+
 print(list_writers)
