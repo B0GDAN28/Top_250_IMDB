@@ -41,8 +41,9 @@ def get_movie_links(doc):
 
 list_movies_links = get_movie_links(doc)
 
+
+# print(list_movies_links)
 print(len(list_movies_links))
-print(list_movies_links)
 
 
 def get_movie_names(doc):
@@ -56,7 +57,8 @@ def get_movie_names(doc):
 
 
 list_movie_names = get_movie_names(doc)
-print(list_movie_names)
+# print(list_movie_names)
+print(len(list_movie_names))
 
 
 def get_movie_production_year(doc):
@@ -71,8 +73,8 @@ def get_movie_production_year(doc):
 
 
 list_year_production = get_movie_production_year(doc)
-print(list_year_production)
-
+# print(list_year_production)
+print(len(list_year_production))
 
 def get_rating_stars(doc):
     rating_stars = []
@@ -87,7 +89,9 @@ def get_rating_stars(doc):
 
 
 list_rating_stars = get_rating_stars(doc)
-print(list_rating_stars)
+# print(list_rating_stars)
+print(len(list_rating_stars))
+
 
 
 def create_rank():
@@ -98,13 +102,14 @@ def create_rank():
 
 
 ranks = create_rank()
-print(ranks)
+# print(ranks)
+print(len(ranks))
 
 
 def scrape_imdb_250(doc):
-    url = "https://www.imdb.com/chart/top/"
-    result = requests.get(url)
-    doc = BeautifulSoup(result.text, "html.parser")
+    # url = "https://www.imdb.com/chart/top/"
+    # result = requests.get(url)
+    # doc = BeautifulSoup(result.text, "html.parser")
     top_movies_dict = {
         "rank": create_rank(),
         "Title": get_movie_names(doc),
@@ -113,8 +118,8 @@ def scrape_imdb_250(doc):
     return top_movies_dict
 
 
-# Top_250_IMDB = pd.DataFrame(scrape_imdb_250(doc))
-# Top_250_IMDB.to_csv("Top_Movies_250_IMDB", index=None)
+Top_250_IMDB = pd.DataFrame(scrape_imdb_250(doc))
+Top_250_IMDB.to_csv("Top_Movies_250_IMDB", index=None)
 
 movie_urls = get_movie_links(doc)[11]
 
