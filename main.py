@@ -270,15 +270,15 @@ def get_list_of_unique_elements(df, column):
             list_of_unique.append(i)
     return list_of_unique
 
-unique_list=get_list_of_unique_elements(df,get_rating_stars(doc))
-print(unique_list)
+list_of_unique=get_list_of_unique_elements(df,get_rating_stars(doc))
+print(list_of_unique)
 def get_list_of_all_elements(df, column):
     list_of_all = []
     for i in column:
         list_of_all.append(i)
     return list_of_all
-list_all_elements=get_list_of_all_elements(df,get_rating_stars(doc))
-print(list_all_elements)
+list_of_all=get_list_of_all_elements(df,get_rating_stars(doc))
+print(list_of_all)
 def get_appearances_count(list_of_all, list_of_unique):
     appearances_count = []
     for i in list_of_unique:
@@ -290,9 +290,12 @@ def get_appearances_count(list_of_all, list_of_unique):
     return appearances_count
 fig = plt.figure()
 ax = fig.add_axes([0,0,1,1])
-x = get_list_of_unique_elements(df,unique_list )
-y = get_appearances_count(get_list_of_all_elements(df,get_rating_stars(doc)), y)
+x = get_list_of_unique_elements(df,get_rating_stars(doc))
+y = get_appearances_count(list_of_all,list_of_unique)
 print(x)
 print(y)
 ax.bar(x,y)
+plt.xlabel('X-axis Label')
+plt.ylabel('Y-axis')
+plt.title('My Graph')
 plt.show()
