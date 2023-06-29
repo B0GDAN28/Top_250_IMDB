@@ -3,7 +3,7 @@ import requests
 import pandas as pd
 import pandas as pd
 import matplotlib.pyplot as plt
-
+import numpy as np
 movie_url = "https://www.imdb.com/chart/top/"
 
 
@@ -288,14 +288,14 @@ def get_appearances_count(list_of_all, list_of_unique):
                 count = count + 1
         appearances_count.append(count)
     return appearances_count
-fig = plt.figure()
-ax = fig.add_axes([0,0,1,1])
-x = get_list_of_unique_elements(df,get_rating_stars(doc))
-y = get_appearances_count(list_of_all,list_of_unique)
-print(x)
-print(y)
-ax.bar(x,y)
-plt.xlabel('X-axis Label')
-plt.ylabel('Y-axis')
-plt.title('My Graph')
+
+x =np.array( get_list_of_unique_elements(df,get_rating_stars(doc)))
+y =np.array( get_appearances_count(list_of_all,list_of_unique))
+plt.plot(x, y)
+
+plt.title("Movie Ratings")
+plt.xlabel("Rating Number")
+plt.ylabel("Number of Movies")
+
 plt.show()
+np.array( get_appearances_count(list_of_all,list_of_unique))
