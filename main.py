@@ -1,6 +1,8 @@
 from bs4 import BeautifulSoup
 import requests
 import pandas as pd
+import pandas as pd
+import matplotlib.pyplot as plt
 
 movie_url = "https://www.imdb.com/chart/top/"
 
@@ -259,3 +261,38 @@ else:
 description = pd.DataFrame(top_movie_details_dict)
 
 description.to_csv("Top_250_IMDB_MOVIES", index=False)
+
+df=pd.DataFrame(top_movie_details_dict)
+def get_list_of_unique_elements(df, column):
+    list_of_unique = []
+    for i in column:
+        if i not in list_of_unique:
+            list_of_unique.append(i)
+    return list_of_unique
+
+unique_list=get_list_of_unique_elements(df,get_rating_stars(doc))
+print(unique_list)
+def get_list_of_all_elements(df, column):
+    list_of_all = []
+    for i in column:
+        list_of_all.append(i)
+    return list_of_all
+list_all_elements=get_list_of_all_elements(df,get_rating_stars(doc))
+print(list_all_elements)
+def get_appearances_count(list_of_all, list_of_unique):
+    appearances_count = []
+    for i in list_of_unique:
+        count = 0
+        for j in list_of_all:
+            if i == j:
+                count = count + 1
+        appearances_count.append(count)
+    return appearances_count
+fig = plt.figure()
+ax = fig.add_axes([0,0,1,1])
+x = get_list_of_unique_elements(df,unique_list )
+y = get_appearances_count(get_list_of_all_elements(df,get_rating_stars(doc)), y)
+print(x)
+print(y)
+ax.bar(x,y)
+plt.show()
