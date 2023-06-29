@@ -270,15 +270,15 @@ def get_list_of_unique_elements(df, column):
             list_of_unique.append(i)
     return list_of_unique
 
-list_of_unique=get_list_of_unique_elements(df,get_rating_stars(doc))
-print(list_of_unique)
+list_of_unique_ratings=get_list_of_unique_elements(df,get_rating_stars(doc))
+
 def get_list_of_all_elements(df, column):
     list_of_all = []
     for i in column:
         list_of_all.append(i)
     return list_of_all
-list_of_all=get_list_of_all_elements(df,get_rating_stars(doc))
-print(list_of_all)
+list_of_all_ratings=get_list_of_all_elements(df,get_rating_stars(doc))
+
 def get_appearances_count(list_of_all, list_of_unique):
     appearances_count = []
     for i in list_of_unique:
@@ -290,7 +290,7 @@ def get_appearances_count(list_of_all, list_of_unique):
     return appearances_count
 
 x =np.array( get_list_of_unique_elements(df,get_rating_stars(doc)))
-y =np.array( get_appearances_count(list_of_all,list_of_unique))
+y =np.array( get_appearances_count(list_of_all_ratings,list_of_unique_ratings))
 plt.plot(x, y)
 
 plt.title("Movie Ratings")
@@ -298,4 +298,15 @@ plt.xlabel("Rating Number")
 plt.ylabel("Number of Movies")
 
 plt.show()
-np.array( get_appearances_count(list_of_all,list_of_unique))
+list_of_all_years_movies=get_list_of_all_elements(df,get_movie_production_year(doc))
+list_of_unique_year_movies=get_list_of_unique_elements(df,get_movie_production_year(doc))
+print(len(list_of_unique_year_movies))
+print(len(list_of_all_years_movies))
+x =np.array(list_of_all_years_movies)
+y =np.array( get_appearances_count(list_of_all_years_movies,list_of_unique_year_movies))
+plt.plot(x, y)
+
+plt.title("Movie Years")
+plt.xlabel("Year ")
+plt.ylabel("Number of Movies")
+
