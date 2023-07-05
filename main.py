@@ -45,9 +45,6 @@ def get_movie_links(doc):
 
 list_movies_links = get_movie_links(doc)
 
-# print(list_movies_links)
-print(len(list_movies_links))
-
 
 def get_movie_names(doc):
     movie_names = []
@@ -60,8 +57,6 @@ def get_movie_names(doc):
 
 
 list_movie_names = get_movie_names(doc)
-# print(list_movie_names)
-print(len(list_movie_names))
 
 
 def get_movie_production_year(doc):
@@ -70,14 +65,12 @@ def get_movie_production_year(doc):
     for year in years:
         g = year.find_all("span")
         for b in g:
-            list_movie_production_year.append(int(b.text[1:-1]))
+            list_movie_production_year.append((b.text[1:-1]))
 
     return list_movie_production_year
 
 
 list_year_production = get_movie_production_year(doc)
-# print(list_year_production)
-print(len(list_year_production))
 
 
 def get_rating_stars(doc):
@@ -93,8 +86,6 @@ def get_rating_stars(doc):
 
 
 list_rating_stars = get_rating_stars(doc)
-# print(list_rating_stars)
-print(len(list_rating_stars))
 
 
 def create_rank():
@@ -105,8 +96,6 @@ def create_rank():
 
 
 ranks = create_rank()
-# print(ranks)
-print(len(ranks))
 
 
 def scrape_imdb_250(doc):
@@ -127,9 +116,6 @@ Top_250_IMDB.to_csv("Top_Movies_250_IMDB", index=None)
 movie_link = get_movie_links(doc)
 
 
-# print(movie_url)
-
-
 def get_movie_url(movie_link):
     movie_doc1 = requests.get(movie_link)
     headers = {
@@ -148,9 +134,6 @@ def get_movie_url(movie_link):
 movie_doc = get_movie_url(movie_link[0])
 
 
-# print(movie_doc)
-
-
 def get_movie_type(movie_doc):
     movie_types = []
     try:
@@ -167,8 +150,6 @@ def get_movie_type(movie_doc):
 
 list_movie_types = get_movie_type(movie_doc)
 
-print(list_movie_types)
-
 
 def get_number_user_rating(movie_doc):
     list_number_user_rating = []
@@ -183,7 +164,6 @@ def get_number_user_rating(movie_doc):
 
 
 number_user_rating = get_number_user_rating(movie_doc)
-print(number_user_rating)
 
 
 def get_directors(movie_doc):
@@ -197,7 +177,6 @@ def get_directors(movie_doc):
 
 
 list_directors = get_directors(movie_doc)
-print(list_directors)
 
 
 def get_writers(movie_doc):
@@ -220,10 +199,6 @@ for i in range(len(list_writers)):
         else:
             spaced_name += list_writers[i][j]
     list_writers[i] = spaced_name
-print(list_writers)
-print(len(list_movies_links), len(list_movie_names), len(list_year_production), len(list_rating_stars), len(ranks),
-      len(list_movie_types),
-      len(number_user_rating), len(list_directors), len(list_writers))
 
 top_movie_details_dict = {
     "Rank": create_rank(),
@@ -245,7 +220,7 @@ try:
 
 except ValueError:
     print("DONT WORK")
-print(top_movie_details_dict)
+
 key_lengths = {key: len(key) for key in top_movie_details_dict.keys()}
 
 # Print the lengths of each key
@@ -273,7 +248,6 @@ def get_list_of_unique_elements(df, column):
 
 
 list_of_unique_ratings = get_list_of_unique_elements(df, get_rating_stars(doc))
-print(list_of_unique_ratings)
 
 
 def get_list_of_all_elements(df, column):
@@ -284,7 +258,6 @@ def get_list_of_all_elements(df, column):
 
 
 list_of_all_ratings = get_list_of_all_elements(df, get_rating_stars(doc))
-print(list_of_all_ratings)
 
 
 def get_appearances_count(list_of_all, list_of_unique):
@@ -305,17 +278,81 @@ plt.plot(x, y)
 plt.title("Movie Ratings")
 plt.xlabel("Rating Number")
 plt.ylabel("Number of Movies")
-
 plt.show()
+plt.savefig("Graph_Rating_Movies_250_IMDB.pdf")
 list_of_all_years_movies = get_list_of_all_elements(df, get_movie_production_year(doc))
 list_of_unique_year_movies = get_list_of_unique_elements(df, get_movie_production_year(doc))
-print(list_of_all_years_movies)
-print(len(list_of_unique_year_movies))
-print(len(list_of_all_years_movies))
-x = np.array(list_of_all_years_movies)
-y = np.array(get_appearances_count(list_of_all_years_movies, list_of_unique_year_movies))
+movie_appearances = get_appearances_count(list_of_all_years_movies, list_of_unique_year_movies)
+
+
+def get_decade(list_of_unique_year_movies):
+    list_unique_years_rounded = []
+    for year in list_of_unique_year_movies:
+        list_unique_years_rounded.append(year[:-1])
+    list_year_decades = []
+    for rounded in list_unique_years_rounded:
+        list_year_decades.append(rounded + 'Os')
+    return list_year_decades
+
+
+list_movies_decades = get_decade(list_of_unique_year_movies)
+
+
+def get_unic_decades(list_movie_decades):
+    list_of_unique_decades = []
+    for i in list_movie_decades:
+        if i not in list_of_unique_decades:
+            list_of_unique_decades.append(i)
+    return list_of_unique_decades
+
+
+def get_appearances_count_decade(list_movies_decades, list_unique_decades):
+    appearances_count = []
+    for i in list_unique_decades:
+        count = 0
+        for j in list_movies_decades:
+            if i == j:
+                count = count + 1
+        appearances_count.append(count)
+    return appearances_count
+
+
+list_unique_decades = get_unic_decades(list_movies_decades)
+list_decades_appearences = get_appearances_count_decade(list_movies_decades, list_unique_decades)
+
+x = np.array(get_appearances_count_decade(list_movies_decades, list_unique_decades))
+y = np.array(list_unique_decades)
 plt.plot(x, y)
 
-plt.title("Movie Years")
-plt.xlabel("Year ")
-plt.ylabel("Number of Movies")
+plt.title("Movie decades")
+plt.xlabel("Number of Movies")
+plt.ylabel("Decades")
+plt.show()
+plt.savefig("Graph_Decades_Movies_250_IMDB.pdf")
+
+if __name__ == '__main__':
+    # print(list_movies_links)
+    # print(list_movie_names)
+    # print(movie_doc)
+    # print(len(list_movie_names))
+    # print(len(list_movies_links))
+    # print(list_year_production)
+    # print(len(list_year_production))
+    # print(list_rating_stars)
+    # print(len(list_rating_stars))
+    # print(ranks)
+    # print(len(ranks))
+    # # print(movie_url)
+    # print(number_user_rating)
+    # print(list_directors)
+    # print(list_writers)
+    # print(len(list_movies_links), len(list_movie_names), len(list_year_production), len(list_rating_stars), len(ranks),
+    #       len(list_movie_types),
+    #       len(number_user_rating), len(list_directors), len(list_writers))
+    # print(top_movie_details_dict)
+    print(len(list_of_all_years_movies))
+    # print(list_of_unique_year_movies)
+    print(movie_appearances)
+    print(len(list_movies_decades))
+    print(len(list_unique_decades))
+    print(list_decades_appearences)
