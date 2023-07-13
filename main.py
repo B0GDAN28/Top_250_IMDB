@@ -206,7 +206,7 @@ top_movie_details_dict = {
     "Rating": get_rating_stars(doc),
     "Genre": [],
     "Number of user ratings": [],
-    "Director/Directos": [],
+    "Director/Directors": [],
     "Writer/Writers": [],
     "Link": get_movie_links(doc)
 }
@@ -214,7 +214,7 @@ try:
     for i in range(len(movie_link)):
         top_movie_details_dict["Genre"].append(get_movie_type(movie_link[i]))
         top_movie_details_dict["Number of user ratings"].append(get_number_user_rating(movie_link[i]))
-        top_movie_details_dict["Director/Directos"].append(get_directors(movie_link[i]))
+        top_movie_details_dict["Director/Directors"].append(get_directors(movie_link[i]))
         top_movie_details_dict["Writer/Writers"].append(get_writers(movie_link[i]))
 
 except ValueError:
@@ -285,7 +285,7 @@ def get_decade(list_of_unique_year_movies_):
 list_movies_decades = get_decade(list_of_unique_year_movies)
 
 
-def get_unic_decades(list_movie_decades):
+def get_unique_decades(list_movie_decades):
     list_of_unique_decades = []
     for decade in list_movie_decades:
         if decade not in list_of_unique_decades:
@@ -304,8 +304,8 @@ def get_appearances_count_decade(list_movies_decades_, list_unique_decades_):
     return appearances_count
 
 
-list_unique_decades = get_unic_decades(list_movies_decades)
-list_decades_appearences = get_appearances_count_decade(list_movies_decades, list_unique_decades)
+list_unique_decades = get_unique_decades(list_movies_decades)
+list_decades_appearances = get_appearances_count_decade(list_movies_decades, list_unique_decades)
 
 x = np.array(get_appearances_count_decade(list_movies_decades, list_unique_decades))
 y = np.array(list_unique_decades)
@@ -341,4 +341,4 @@ if __name__ == '__main__':
     print(movie_appearances)
     print(len(list_movies_decades))
     print(len(list_unique_decades))
-    print(list_decades_appearences)
+    print(list_decades_appearances)
