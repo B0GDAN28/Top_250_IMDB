@@ -30,7 +30,9 @@ doc = get_top_250(movie_url)
 
 def get_movie_links(doc_):
     urls = []
-    links = doc_.find_all("td", class_="titleColumn")
+    links = doc_.find_all("div",
+                          class_="ipc-title ipc-title--base ipc-title--title ipc-title-link-no-icon "
+                                 "ipc-title--on-textPrimary sc-14dd939d-7 fjdYTb cli-title")
 
     for a in links:
         f = a.find_all("a")
@@ -47,7 +49,9 @@ list_movies_links = get_movie_links(doc)
 
 def get_movie_names(doc_):
     movie_names = []
-    names = doc_.find_all("td", class_="titleColumn")
+    names = doc_.find_all("div",
+                          class_="ipc-title ipc-title--base ipc-title--title ipc-title-link-no-icon "
+                                 "ipc-title--on-textPrimary sc-14dd939d-7 fjdYTb cli-title")
     for name_link in names:
         f = name_link.find_all("a")
         for name in f:
@@ -60,13 +64,15 @@ list_movie_names = get_movie_names(doc)
 
 def get_movie_production_year(doc_):
     list_movie_production_year = []
-    years = doc_.find_all("td", class_="titleColumn")
-    for year_span in years:
-        spans = year_span.find_all("span")
-        for movie_year in spans:
-            list_movie_production_year.append((movie_year.text[1:-1]))
+    years = doc_.find_all("div", class_="sc-14dd939d-5 cPiUKY cli-title-metadata")
 
-    return list_movie_production_year
+    for year_span in years:
+        spans = year_span.find_all("span", class_="sc-14dd939d-6 kHVqMR cli-title-metadata-item")
+        for movie_year in spans:
+            list_movie_production_year.append(movie_year.text)
+        list_movie_production_year_filtered = [year for year in list_movie_production_year if year.isdigit()]
+
+    return list_movie_production_year_filtered
 
 
 list_year_production = get_movie_production_year(doc)
@@ -74,10 +80,12 @@ list_year_production = get_movie_production_year(doc)
 
 def get_rating_stars(doc_):
     rating_stars = []
-    stars = doc_.find_all("td", class_="ratingColumn imdbRating")
+    stars = doc_.find_all("div", class_="sc-951b09b2-0 hDQwjv sc-14dd939d-2 fKPTOp cli-ratings-container")
 
     for rating in stars:
-        rating_strong = rating.find_all("strong")
+        rating_strong = rating.find_all("span",
+                                        class_="ipc-rating-star ipc-rating-star--base ipc-rating-star--imdb "
+                                               "ratingGroup--imdb-rating")
         for star_rating in rating_strong:
             rating_stars.append(star_rating.text)
     rating_stars_filtered = [star for star in rating_stars if star != "\n"]
@@ -87,14 +95,14 @@ def get_rating_stars(doc_):
 list_rating_stars = get_rating_stars(doc)
 
 
-def create_rank():
-    ranks = []
-    for rank in range(250):
-        ranks.append(rank + 1)
-    return ranks
-
-
-ranks = create_rank()
+# def create_rank():
+#     ranks = []
+#     for rank in range(250):
+#         ranks.append(rank + 1)
+#     return ranks
+#
+#
+# ranks = create_rank()
 
 
 def scrape_imdb_250(doc_):
@@ -102,7 +110,6 @@ def scrape_imdb_250(doc_):
     # result = requests.get(url)
     # doc = BeautifulSoup(result.text, "html.parser")
     top_movies_dict = {
-        "rank": create_rank(),
         "Title": get_movie_names(doc_),
         "Movie Launched": get_movie_production_year(doc_),
         "Rating": get_rating_stars(doc_)}
@@ -112,6 +119,7 @@ def scrape_imdb_250(doc_):
 Top_250_IMDB = pd.DataFrame(scrape_imdb_250(doc))
 Top_250_IMDB.to_csv("Top_Movies_250_IMDB", index=None)
 # URL of the webscraping movie
+
 movie_link = get_movie_links(doc)
 
 
@@ -156,7 +164,8 @@ def get_number_user_rating(movie_doc_):
         numbers = movie_doc_.find_all("div", class_="sc-bde20123-3 bjjENQ")
         for number in numbers:
             list_number_user_rating.append(number.text)
-        return list_number_user_rating
+        list_number_user_rating1 = list_number_user_rating[0]
+        return list_number_user_rating1
     except (AttributeError, ValueError, IndexError):
         number = "Not found"
         return number
@@ -200,7 +209,6 @@ for i in range(len(list_writers)):
     list_writers[i] = spaced_name
 
 top_movie_details_dict = {
-    "Rank": create_rank(),
     "Movie Name": get_movie_names(doc),
     "Production Year": get_movie_production_year(doc),
     "Rating": get_rating_stars(doc),
@@ -317,28 +325,17 @@ plt.ylabel("Decades")
 plt.show()
 
 if __name__ == '__main__':
-    print(list_movies_links)
-    print(list_movie_names)
+    print("This is the list of movie links", list_movies_links)
+    print("This is the list of movie names", list_movie_names)
     # print(movie_doc)
-    print(len(list_movie_names))
-    print(len(list_movies_links))
-    print(list_year_production)
-    print(len(list_year_production))
-    print(list_rating_stars)
-    print(len(list_rating_stars))
-    print(ranks)
-    print(len(ranks))
+    print("This is the list of movie productions", list_year_production)
+    print("This is the list of movie ratings", list_rating_stars)
     # print(movie_url)
-    print(number_user_rating)
-    print(list_directors)
-    print(list_writers)
-    print(len(list_movies_links), len(list_movie_names), len(list_year_production), len(list_rating_stars), len(ranks),
-          len(list_movie_types),
-          len(number_user_rating), len(list_directors), len(list_writers))
-    print(top_movie_details_dict)
-    print(len(list_of_all_years_movies))
-    print(list_of_unique_year_movies)
-    print(movie_appearances)
-    print(len(list_movies_decades))
-    print(len(list_unique_decades))
-    print(list_decades_appearances)
+    print("This is the list of number of reviews", number_user_rating)
+    print("This is the list of movie directors", list_directors)
+    print("This is the list of movie writers", list_writers)
+
+    # print(top_movie_details_dict)
+    # print(list_of_unique_year_movies)
+    # print(movie_appearances)
+    # print(list_decades_appearances)
